@@ -164,7 +164,7 @@ a{ color:inherit; text-decoration:none; }
 /* =========================
    TYPOGRAPHY
 ========================= */
-.h1{
+h1{
   font-size: clamp(26px, 3.2vw, 38px);
   margin:0 0 8px;
 }
@@ -220,6 +220,7 @@ a{ color:inherit; text-decoration:none; }
   display:flex;
   flex-direction:column;
   gap:7px;
+  margin-top: 12px;
 }
 
 .label{

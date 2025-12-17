@@ -12,13 +12,13 @@
 </head>
 
 <body>
-  <!-- Include partials  -->
+  <!-- Layout slots populated via include.js -->
   <div id="bg-slot"></div>
   <div id="header-slot"></div>
-  
+
   <main class="container hero">
     <section class="card glow hero-card">
-      <h1 class="h1">Welcome, <span id="currentUserName">Player</span></h1>
+      <h1>Welcome, <span id="currentUserName">Player</span></h1>
       <p class="sub">
         Choose a game and start playing!
       </p>
@@ -114,7 +114,7 @@
           </div>
         </article>
       </div>
-      <h1 class="h1">Your achievements in games:</h1>
+      <h1>Your achievements in games:</h1>
 
       <div class="kpi">
         <div class="card">
@@ -133,7 +133,7 @@
 
   </main>
 
-  <!-- slot for header -->
+  <!-- slot for footer -->
   <div id="footer-slot"></div>
 
   <!-- JS -->

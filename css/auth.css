@@ -22,12 +22,9 @@
 /* Auth page panels (replaces inline padding on card elements) */
 .auth-panel{
   padding: 16px;
+  padding-top: 0%;
 }
 
-/* Spacing helpers used in the login form (replaces inline margin-top) */
-.field--spaced{
-  margin-top: 12px;
-}
 
 .actions--spaced{
   margin-top: 14px;
