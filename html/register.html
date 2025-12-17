@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEON ARCADE • רישום</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+</head>
+<body data-page="register">
+
+  <embed src="/header.html" type="text/html" style="width:100%; height:74px; border:0;" />
+
+  <main class="container auth-wrap">
+    <section class="card glow auth-card">
+      <div class="auth-top">
+        <h1 class="h1">רישום משתמש חדש</h1>
+        <p class="sub">יצירת פרופיל תשמור נתונים מקומיים בלבד (LocalStorage).</p>
+      </div>
+
+      <div class="auth-body grid grid--2">
+        <form id="registerForm" class="card" style="padding:16px" autocomplete="on">
+          <div class="field">
+            <label class="label" for="fullName">שם מלא</label>
+            <input class="input" id="fullName" name="fullName" placeholder="שם פרטי ושם משפחה" required />
+          </div>
+
+          <div class="field" style="margin-top:12px">
+            <label class="label" for="email">אימייל</label>
+            <input class="input" id="email" name="email" type="email" placeholder="name@example.com" required />
+          </div>
+
+          <div class="field" style="margin-top:12px">
+            <label class="label" for="username">שם משתמש</label>
+            <input class="input" id="username" name="username" placeholder="למשל: neonPlayer" required />
+          </div>
+
+          <div class="field" style="margin-top:12px">
+            <label class="label" for="password">סיסמה</label>
+            <input class="input" id="password" name="password" type="password" required />
+          </div>
+
+          <div class="field" style="margin-top:12px">
+            <label class="label" for="password2">אימות סיסמה</label>
+            <input class="input" id="password2" name="password2" type="password" required />
+          </div>
+
+          <div class="actions" style="margin-top:14px">
+            <button class="btn btn--primary" type="submit">יצירת משתמש</button>
+            <a class="btn" href="index.html">חזרה לכניסה</a>
+          </div>
+
+          <hr class="sep" />
+          <div id="toast" class="toast" hidden></div>
+        </form>
+
+        <aside class="card" style="padding:16px">
+          <div class="muted" style="margin-bottom:8px">מה יגיע בהמשך?</div>
+          <ul style="margin:0; padding-inline-start:18px; color:var(--muted); line-height:1.7">
+            <li>ולידציות מתקדמות (סיסמה חזקה, פורמט, אורך)</li>
+            <li>שדות נוספים “כמקובל באתרים אמיתיים”</li>
+            <li>תנאי שימוש / אישור מדיניות</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <embed src="/footer.html" type="text/html" style="width:100%; height:62px; border:0;" />
+
+  <script src="/js/storage.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>

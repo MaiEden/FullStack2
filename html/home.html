@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEON ARCADE • Home</title>
+
+  <!-- Global styles + home-specific styles -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/home.css" />
+</head>
+
+<body>
+
+  <!-- Reusable header (embedded) -->
+  <embed src="header.html" type="text/html" style="width:100%; height:74px; border:0;" />
+
+  <main class="container hero">
+    <section class="card glow hero-card">
+      <h1 class="h1">Welcome, <span id="currentUserName">Player</span></h1>
+      <p class="sub">
+        Choose an activity. Two games will be fully implemented: Simon Says + Memory Game.
+        The rest are shown as “In development”.
+      </p>
+
+      <div class="kpi">
+        <div class="card">
+          <div class="kpi__num" id="kpiLogins">0</div>
+          <div class="kpi__lbl">Total logins</div>
+        </div>
+        <div class="card">
+          <div class="kpi__num" id="kpiPoints">0</div>
+          <div class="kpi__lbl">Points</div>
+        </div>
+        <div class="card">
+          <div class="kpi__num" id="kpiPlayers">0</div>
+          <div class="kpi__lbl">Users in system</div>
+        </div>
+      </div>
+
+      <div class="tiles">
+        <article class="tile">
+          <h3 class="tile__title">Simon Says</h3>
+          <p class="tile__desc">Skeleton for an animation/movement game with difficulty levels (later).</p>
+          <span class="badge badge--live">Planned to be live</span>
+          <div style="margin-top:10px">
+            <button class="btn btn--primary" data-game="simon" data-status="live">Enter game</button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <h3 class="tile__title">Memory Game</h3>
+          <p class="tile__desc">Skeleton for a logic-based game with a dynamic UI as progress changes.</p>
+          <span class="badge badge--live">Planned to be live</span>
+          <div style="margin-top:10px">
+            <button class="btn btn--primary" data-game="memory" data-status="live">Enter game</button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <h3 class="tile__title">Future Quiz</h3>
+          <p class="tile__desc">In development: only if time remains.</p>
+          <span class="badge badge--dev">In development</span>
+          <div style="margin-top:10px">
+            <button class="btn" disabled data-game="quiz" data-status="dev">Locked</button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <h3 class="tile__title">Space Puzzle</h3>
+          <p class="tile__desc">In development: optional extra.</p>
+          <span class="badge badge--dev">In development</span>
+          <div style="margin-top:10px">
+            <button class="btn" disabled data-status="dev">Locked</button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <h3 class="tile__title">Achievements</h3>
+          <p class="tile__desc">Skeleton for showing achievements, times, and user history.</p>
+          <span class="badge badge--dev">In development</span>
+          <div style="margin-top:10px">
+            <button class="btn" disabled data-status="dev">Locked</button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <h3 class="tile__title">Leaderboard</h3>
+          <p class="tile__desc">In development: ranking by points/times.</p>
+          <span class="badge badge--dev">In development</span>
+          <div style="margin-top:10px">
+            <button class="btn" disabled data-status="dev">Locked</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Reusable footer (embedded) -->
+  <embed src="footer.html" type="text/html" style="width:100%; height:62px; border:0;" />
+
+  <!-- JS (paths fixed because this file is inside /html) -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/home.js"></script>
+</body>
+</html>

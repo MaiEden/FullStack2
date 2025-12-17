@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEON ARCADE • Login</title>
+
+  <!-- Global styles (shared across all pages) -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/auth.css" />
+</head>
+
+<body data-page="login">
+
+  <!-- Reusable header (embedded) -->
+  <embed src="header.html" type="text/html" style="width:100%; height:74px; border:0;" />
+
+  <main class="container auth-wrap">
+    <section class="card glow auth-card">
+      <div class="auth-top">
+        <h1 class="h1">Sign in</h1>
+        <p class="sub">
+          Welcome to NEON ARCADE — a futuristic arcade hub. Signing in unlocks the games area.
+        </p>
+      </div>
+
+      <div class="auth-body grid grid--2">
+        <form id="loginForm" class="card" style="padding:16px" autocomplete="on">
+          <div class="field">
+            <label class="label" for="username">Username</label>
+            <input class="input" id="username" name="username" placeholder="e.g. neonPlayer" required />
+          </div>
+
+          <div class="field" style="margin-top:12px">
+            <label class="label" for="password">Password</label>
+            <input class="input" id="password" name="password" type="password" placeholder="••••••••" required />
+          </div>
+
+          <div class="actions" style="margin-top:14px">
+            <button class="btn btn--primary" type="submit">Login</button>
+            <a class="btn" href="register.html">Create new account</a>
+          </div>
+
+          <hr class="sep" />
+          <div id="toast" class="toast" hidden></div>
+        </form>
+
+        <aside class="card" style="padding:16px">
+          <div class="muted" style="margin-bottom:8px">Notes (project skeleton):</div>
+
+          <ul style="margin:0; padding-inline-start:18px; color:var(--muted); line-height:1.7">
+            <li>Data is stored in LocalStorage only</li>
+            <li>Basic lockout mechanism after failed attempts</li>
+            <li>Session with expiration (cookie-like)</li>
+            <li>Later: achievements, times, score, user history</li>
+          </ul>
+
+          <div style="margin-top:12px">
+            <span class="muted">No account?</span>
+            <a class="small-link" href="register.html">Register</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <!-- Reusable footer (embedded) -->
+  <embed src="footer.html" type="text/html" style="width:100%; height:62px; border:0;" />
+
+  <!-- JS (paths fixed because this file is inside /html) -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+</body>
+</html>

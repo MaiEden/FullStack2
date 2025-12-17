@@ -1,0 +1,22 @@
+.auth-wrap{
+  padding: 26px 0 8px;
+}
+.auth-card{
+  padding: 18px;
+}
+.auth-top{
+  padding: 16px 16px 0;
+}
+.auth-body{
+  padding: 16px;
+}
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.small-link{
+  color: var(--muted);
+  border-bottom:1px dashed rgba(234,240,255,.25);
+}
+.small-link:hover{ color: var(--text); }
