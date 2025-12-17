@@ -13,7 +13,7 @@
 <body>
 
   <!-- Reusable header (embedded) -->
-  <embed src="header.html" type="text/html" style="width:100%; height:74px; border:0;" />
+  <embed class="embed embed--header" src="header.html" type="text/html" />
 
   <main class="container hero">
     <section class="card glow hero-card">
@@ -41,54 +41,72 @@
       <div class="tiles">
         <article class="tile">
           <h3 class="tile__title">Simon Says</h3>
-          <p class="tile__desc">Skeleton for an animation/movement game with difficulty levels (later).</p>
+          <p class="tile__desc">
+            Skeleton for an animation/movement game with difficulty levels (later).
+          </p>
           <span class="badge badge--live">Planned to be live</span>
-          <div style="margin-top:10px">
-            <button class="btn btn--primary" data-game="simon" data-status="live">Enter game</button>
+          <div class="tile-actions">
+            <button class="btn btn--primary" data-game="simon" data-status="live">
+              Enter game
+            </button>
           </div>
         </article>
 
         <article class="tile">
           <h3 class="tile__title">Memory Game</h3>
-          <p class="tile__desc">Skeleton for a logic-based game with a dynamic UI as progress changes.</p>
+          <p class="tile__desc">
+            Skeleton for a logic-based game with a dynamic UI as progress changes.
+          </p>
           <span class="badge badge--live">Planned to be live</span>
-          <div style="margin-top:10px">
-            <button class="btn btn--primary" data-game="memory" data-status="live">Enter game</button>
+          <div class="tile-actions">
+            <button class="btn btn--primary" data-game="memory" data-status="live">
+              Enter game
+            </button>
           </div>
         </article>
 
         <article class="tile">
           <h3 class="tile__title">Future Quiz</h3>
-          <p class="tile__desc">In development: only if time remains.</p>
+          <p class="tile__desc">
+            In development: only if time remains.
+          </p>
           <span class="badge badge--dev">In development</span>
-          <div style="margin-top:10px">
-            <button class="btn" disabled data-game="quiz" data-status="dev">Locked</button>
+          <div class="tile-actions">
+            <button class="btn" disabled data-game="quiz" data-status="dev">
+              Locked
+            </button>
           </div>
         </article>
 
         <article class="tile">
           <h3 class="tile__title">Space Puzzle</h3>
-          <p class="tile__desc">In development: optional extra.</p>
+          <p class="tile__desc">
+            In development: optional extra.
+          </p>
           <span class="badge badge--dev">In development</span>
-          <div style="margin-top:10px">
+          <div class="tile-actions">
             <button class="btn" disabled data-status="dev">Locked</button>
           </div>
         </article>
 
         <article class="tile">
           <h3 class="tile__title">Achievements</h3>
-          <p class="tile__desc">Skeleton for showing achievements, times, and user history.</p>
+          <p class="tile__desc">
+            Skeleton for showing achievements, times, and user history.
+          </p>
           <span class="badge badge--dev">In development</span>
-          <div style="margin-top:10px">
+          <div class="tile-actions">
             <button class="btn" disabled data-status="dev">Locked</button>
           </div>
         </article>
 
         <article class="tile">
           <h3 class="tile__title">Leaderboard</h3>
-          <p class="tile__desc">In development: ranking by points/times.</p>
+          <p class="tile__desc">
+            In development: ranking by points/times.
+          </p>
           <span class="badge badge--dev">In development</span>
-          <div style="margin-top:10px">
+          <div class="tile-actions">
             <button class="btn" disabled data-status="dev">Locked</button>
           </div>
         </article>
@@ -97,9 +115,9 @@
   </main>
 
   <!-- Reusable footer (embedded) -->
-  <embed src="footer.html" type="text/html" style="width:100%; height:62px; border:0;" />
+  <embed class="embed embed--footer" src="footer.html" type="text/html" />
 
-  <!-- JS (paths fixed because this file is inside /html) -->
+  <!-- JS -->
   <script src="../js/storage.js"></script>
   <script src="../js/home.js"></script>
 </body>

@@ -62,3 +62,7 @@
 }
 .badge--dev{ border-color: rgba(255,255,255,.18); }
 .badge--live{ border-color: rgba(124,255,178,.28); color: rgba(124,255,178,.9); }
+/* Buttons container inside game tiles (replaces inline margin-top) */
+.tile-actions{
+  margin-top: 10px;
+}

@@ -3,6 +3,9 @@
 }
 .auth-card{
   padding: 18px;
+  max-width: 720px;   /* controls card width */
+  margin-inline: auto;
+  padding: 20px;
 }
 .auth-top{
   padding: 16px 16px 0;
@@ -15,8 +18,17 @@
   gap:10px;
   flex-wrap:wrap;
 }
-.small-link{
-  color: var(--muted);
-  border-bottom:1px dashed rgba(234,240,255,.25);
+
+/* Auth page panels (replaces inline padding on card elements) */
+.auth-panel{
+  padding: 16px;
 }
-.small-link:hover{ color: var(--text); }
+
+/* Spacing helpers used in the login form (replaces inline margin-top) */
+.field--spaced{
+  margin-top: 12px;
+}
+
+.actions--spaced{
+  margin-top: 14px;
+}
