@@ -1,27 +1,120 @@
 <!doctype html>
 <html lang="en" dir="ltr">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NEON ARCADE • Home</title>
 
-  <!-- Global styles + home-specific styles -->
+  <!-- Styles -->
   <link rel="stylesheet" href="../css/global.css" />
   <link rel="stylesheet" href="../css/home.css" />
 </head>
 
 <body>
-
-  <!-- Reusable header (embedded) -->
-  <embed class="embed embed--header" src="header.html" type="text/html" />
-
+  <!-- Include partials  -->
+  <div id="bg-slot"></div>
+  <div id="header-slot"></div>
+  
   <main class="container hero">
     <section class="card glow hero-card">
       <h1 class="h1">Welcome, <span id="currentUserName">Player</span></h1>
       <p class="sub">
-        Choose an activity. Two games will be fully implemented: Simon Says + Memory Game.
-        The rest are shown as “In development”.
+        Choose a game and start playing!
       </p>
+
+      <div class="tiles">
+        <article class="tile">
+          <div class="tile__media">
+            <img class="tile__img" src="../imgs/simon.png" alt="Simon Says cover" loading="lazy" />
+          </div>
+          <h3 class="tile__title">Simon Says</h3>
+          <p class="tile__desc">
+            Skeleton for an animation/movement game with difficulty levels (later).
+          </p>
+          <div class="tile-actions">
+            <button class="btn btn--primary" data-game="simon" data-status="live">
+              Enter game
+            </button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <div class="tile__media">
+            <img class="tile__img" src="../imgs/memory.png" alt="Memory Game cover" loading="lazy" />
+          </div>
+          <h3 class="tile__title">Memory Game</h3>
+          <p class="tile__desc">
+            Skeleton for a logic-based game with a dynamic UI as progress changes.
+          </p>
+          <div class="tile-actions">
+            <button class="btn btn--primary" data-game="memory" data-status="live">
+              Enter game
+            </button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <div class="tile__media">
+            <img class="tile__img" src="../imgs/quiz.png" alt="Knowledge Quiz cover" loading="lazy" />
+          </div>
+          <h3 class="tile__title">Knowledge Quiz</h3>
+          <p class="tile__desc">
+            In development: only if time remains.
+          </p>
+          <div class="tile-actions">
+            <button class="btn btn--primary" data-game="quiz" data-status="dev">
+              Enter game
+            </button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <div class="tile__media">
+            <img class="tile__img" src="../imgs/space.png" alt="Space Puzzle cover" loading="lazy" />
+          </div>
+          <h3 class="tile__title">Space Puzzle</h3>
+          <p class="tile__desc">
+            In development: optional extra.
+          </p>
+          <div class="tile-actions">
+            <button class="btn btn--primary" data-game="space" data-status="dev">
+              Enter game
+            </button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <div class="tile__media">
+            <img class="tile__img" src="../imgs/achievements.png" alt="Achievements cover" loading="lazy" />
+          </div>
+          <h3 class="tile__title">Achievements</h3>
+          <p class="tile__desc">
+            Skeleton for showing achievements, times, and user history.
+          </p>
+          <div class="tile-actions">
+            <button class="btn btn--primary" data-game="achievements" data-status="dev">
+              Enter game
+            </button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <div class="tile__media">
+            <img class="tile__img" src="../imgs/leaderboard.png" alt="Leaderboard cover" loading="lazy" />
+          </div>
+          <h3 class="tile__title">Leaderboard</h3>
+          <p class="tile__desc">
+            In development: ranking by points/times.
+          </p>
+          <div class="tile-actions">
+            <button class="btn btn--primary" data-game="leaderboard" data-status="dev">
+              Enter game
+            </button>
+          </div>
+        </article>
+      </div>
+      <h1 class="h1">Your achievements in games:</h1>
 
       <div class="kpi">
         <div class="card">
@@ -38,87 +131,14 @@
         </div>
       </div>
 
-      <div class="tiles">
-        <article class="tile">
-          <h3 class="tile__title">Simon Says</h3>
-          <p class="tile__desc">
-            Skeleton for an animation/movement game with difficulty levels (later).
-          </p>
-          <span class="badge badge--live">Planned to be live</span>
-          <div class="tile-actions">
-            <button class="btn btn--primary" data-game="simon" data-status="live">
-              Enter game
-            </button>
-          </div>
-        </article>
-
-        <article class="tile">
-          <h3 class="tile__title">Memory Game</h3>
-          <p class="tile__desc">
-            Skeleton for a logic-based game with a dynamic UI as progress changes.
-          </p>
-          <span class="badge badge--live">Planned to be live</span>
-          <div class="tile-actions">
-            <button class="btn btn--primary" data-game="memory" data-status="live">
-              Enter game
-            </button>
-          </div>
-        </article>
-
-        <article class="tile">
-          <h3 class="tile__title">Future Quiz</h3>
-          <p class="tile__desc">
-            In development: only if time remains.
-          </p>
-          <span class="badge badge--dev">In development</span>
-          <div class="tile-actions">
-            <button class="btn" disabled data-game="quiz" data-status="dev">
-              Locked
-            </button>
-          </div>
-        </article>
-
-        <article class="tile">
-          <h3 class="tile__title">Space Puzzle</h3>
-          <p class="tile__desc">
-            In development: optional extra.
-          </p>
-          <span class="badge badge--dev">In development</span>
-          <div class="tile-actions">
-            <button class="btn" disabled data-status="dev">Locked</button>
-          </div>
-        </article>
-
-        <article class="tile">
-          <h3 class="tile__title">Achievements</h3>
-          <p class="tile__desc">
-            Skeleton for showing achievements, times, and user history.
-          </p>
-          <span class="badge badge--dev">In development</span>
-          <div class="tile-actions">
-            <button class="btn" disabled data-status="dev">Locked</button>
-          </div>
-        </article>
-
-        <article class="tile">
-          <h3 class="tile__title">Leaderboard</h3>
-          <p class="tile__desc">
-            In development: ranking by points/times.
-          </p>
-          <span class="badge badge--dev">In development</span>
-          <div class="tile-actions">
-            <button class="btn" disabled data-status="dev">Locked</button>
-          </div>
-        </article>
-      </div>
-    </section>
   </main>
 
-  <!-- Reusable footer (embedded) -->
-  <embed class="embed embed--footer" src="footer.html" type="text/html" />
+  <!-- slot for header -->
+  <div id="footer-slot"></div>
 
   <!-- JS -->
   <script src="../js/storage.js"></script>
   <script src="../js/home.js"></script>
+  <script src="../js/include.js"></script>
 </body>
 </html>

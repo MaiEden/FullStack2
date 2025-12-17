@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en" dir="ltr">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,33 +11,13 @@
 </head>
 
 <!-- data-page identifies the current page for JavaScript logic -->
+
 <body data-page="login">
-  <div class="neon-bg" aria-hidden="true">
-    <span class="shape s1"></span>
-    <span class="shape s2"></span>
-    <span class="shape s3"></span>
-    <span class="shape s4"></span>
-    <span class="shape s5"></span>
-    <span class="shape s6"></span>
-    <span class="shape s7"></span>
-    <span class="shape s8"></span>
-  </div>
-  <!-- Embedded header -->
-<header class="site-header">
-  <div class="container">
-    <div class="brand">
-      <span class="brand__logo"></span>
-      <span class="brand__name">NEON ARCADE</span>
-    </div>
+  <!-- Include partials  -->
+  <div id="bg-slot"></div>
+  <div id="header-slot"></div>
 
-    <nav class="nav">
-      <a class="nav__link" href="home.html">Home</a>
-      <a class="nav__link" href="#" data-action="logout">Logout</a>
-    </nav>
-  </div>
-</header>
-
- <main class="container auth-wrap">
+  <main class="container auth-wrap">
     <section class="card glow auth-card">
       <div class="auth-top">
         <h1 class="h1">Sign in</h1>
@@ -69,11 +50,12 @@
     </section>
   </main>
 
-  <!-- Embedded footer -->
-<footer class="site-footer">
-  <div class="muted">Coolest games ever! ©</div>
-</footer>
+  <!-- slot for header -->
+  <div id="footer-slot"></div>
+
   <script src="../js/storage.js"></script>
   <script src="../js/auth.js"></script>
+  <script src="../js/include.js"></script>
 </body>
+
 </html>
