@@ -8,14 +8,13 @@ const stack = document.getElementById("stack");
 
 const movesEl = document.getElementById("moves");
 const matchesEl = document.getElementById("matches");
+const difficultyLabel = document.getElementById("difficultyLabel");
 
-const hudDifficulty = document.getElementById("hudDifficulty");
-const hudRound = document.getElementById("hudRound");
-const hudBest = document.getElementById("hudBest");
-
-const btnStart = document.getElementById("btnStart");
-const btnRestart = document.getElementById("btnRestart");
-const toastEl = document.getElementById("toast");
+/* =========================
+   Force stack behavior (JS only)
+========================= */
+stack.style.position = "relative";
+stack.style.minHeight = "160px";
 
 /* =========================
    Config
@@ -41,17 +40,8 @@ let moves = 0;
 let matches = 0;
 let totalPairs = 0;
 
-let stackOffset = 0;
-
-let started = false;
 let levelIndex = 0;
-let round = 1;
-
-const bestMoves = {
-  easy: null,
-  medium: null,
-  hard: null
-};
+let stackCount = 0;
 
 /* =========================
    Storage helpers
@@ -91,23 +81,10 @@ function saveUserLevel(level) {
 }
 
 /* =========================
-   Init
+   Init – AUTO START
 ========================= */
 levelIndex = getUserLevelIndex();
-round = levelIndex + 1;
-updateHud();
-
-btnStart.addEventListener("click", () => {
-  started = true;
-  btnStart.disabled = true;
-  btnRestart.disabled = false;
-  startGame();
-});
-
-btnRestart.addEventListener("click", () => {
-  if (!started) return;
-  startGame();
-});
+startGame();
 
 /* =========================
    Game Flow
@@ -119,8 +96,7 @@ function startGame() {
   const cfg = LEVELS[level];
   totalPairs = cfg.pairs;
 
-  hudDifficulty.textContent = capitalize(level);
-  hudRound.textContent = String(round);
+  difficultyLabel.textContent = capitalize(level);
 
   const symbols = shuffle([
     ...EMOJIS.slice(0, totalPairs),
@@ -143,15 +119,6 @@ function startGame() {
 
     card.addEventListener("click", () => reveal(card));
     board.appendChild(card);
-
-    // entrance animation
-    card.animate(
-      [
-        { transform: "translateY(10px)", opacity: 0 },
-        { transform: "translateY(0)", opacity: 1 }
-      ],
-      { duration: 200, easing: "ease-out" }
-    );
   });
 }
 
@@ -159,7 +126,7 @@ function startGame() {
    Gameplay
 ========================= */
 function reveal(card) {
-  if (!started || lock) return;
+  if (lock) return;
   if (card.classList.contains("revealed")) return;
 
   card.classList.add("revealed");
@@ -176,7 +143,7 @@ function reveal(card) {
   moves++;
   movesEl.textContent = moves;
 
-  setTimeout(checkMatch, 500);
+  setTimeout(checkMatch, 400);
 }
 
 function checkMatch() {
@@ -184,28 +151,64 @@ function checkMatch() {
     firstCard.dataset.symbol === secondCard.dataset.symbol;
 
   if (isMatch) {
-    handleMatch(firstCard, secondCard);
+    stackMatchedCards(firstCard, secondCard);
     matches++;
     matchesEl.textContent = matches;
 
-    if (matches === totalPairs) {
-      finishLevel();
-      return;
-    }
-
     resetPick();
     lock = false;
-  } else {
-    shake(firstCard);
-    shake(secondCard);
 
+    if (matches === totalPairs) {
+      finishLevel();
+    }
+  } else {
     setTimeout(() => {
       firstCard.classList.remove("revealed");
       secondCard.classList.remove("revealed");
       resetPick();
       lock = false;
-    }, 500);
+    }, 400);
   }
+}
+
+/* =========================
+   STACK + PLACEHOLDER (KEY FIX)
+========================= */
+function stackMatchedCards(c1, c2) {
+  [c1, c2].forEach(card => {
+    card.animate(
+      [
+        { transform: "translateY(0)" },
+        { transform: "translateY(-12px)" },
+        { transform: "translateY(0)" }
+      ],
+      { duration: 220, easing: "ease-out" }
+    );
+  });
+
+  setTimeout(() => {
+    [c1, c2].forEach(card => {
+      /* 1️⃣ placeholder שומר מקום בלוח */
+      const placeholder = document.createElement("div");
+      placeholder.className = "card-tile";
+      placeholder.style.width = card.offsetWidth + "px";
+      placeholder.style.height = card.offsetHeight + "px";
+
+      board.replaceChild(placeholder, card);
+
+      /* 2️⃣ הקלף האמיתי נערם בצד */
+      card.classList.remove("revealed");
+      card.style.pointerEvents = "none";
+      card.style.position = "absolute";
+      card.style.zIndex = 100 + stackCount;
+      card.style.transform = "scale(0.85)";
+      card.style.top = `${stackCount * 3}px`;
+      card.style.left = `${stackCount * 3}px`;
+
+      stack.appendChild(card);
+      stackCount++;
+    });
+  }, 220);
 }
 
 /* =========================
@@ -214,55 +217,23 @@ function checkMatch() {
 function finishLevel() {
   lock = true;
 
-  const level = LEVEL_ORDER[levelIndex];
-  if (bestMoves[level] == null || moves < bestMoves[level]) {
-    bestMoves[level] = moves;
-    hudBest.textContent = moves;
-  }
-
-  toast(`${capitalize(level)} completed!`);
-
   setTimeout(() => {
     levelIndex++;
 
     if (levelIndex >= LEVEL_ORDER.length) {
-      toast("You finished all levels! 🏆");
-      btnStart.disabled = false;
+      alert("You finished all levels! 🏆");
       return;
     }
 
-    const nextLevel = LEVEL_ORDER[levelIndex];
-    saveUserLevel(nextLevel);
-
-    round = levelIndex + 1;
+    saveUserLevel(LEVEL_ORDER[levelIndex]);
     startGame();
     lock = false;
-  }, 900);
+  }, 700);
 }
 
 /* =========================
    Helpers
 ========================= */
-function handleMatch(c1, c2) {
-  [c1, c2].forEach(card => {
-    const clone = card.cloneNode(true);
-    clone.style.position = "absolute";
-    clone.style.top = `${stackOffset}px`;
-    clone.style.left = `${stackOffset}px`;
-    stack.appendChild(clone);
-
-    clone.animate(
-      [
-        { transform: "scale(0.9)", opacity: 0 },
-        { transform: "scale(1)", opacity: 1 }
-      ],
-      { duration: 200 }
-    );
-  });
-
-  stackOffset += 6;
-}
-
 function resetPick() {
   firstCard = null;
   secondCard = null;
@@ -271,10 +242,10 @@ function resetPick() {
 function resetState() {
   board.innerHTML = "";
   stack.innerHTML = "";
-  stackOffset = 0;
   moves = 0;
   matches = 0;
   lock = false;
+  stackCount = 0;
 
   movesEl.textContent = "0";
   matchesEl.textContent = "0";
@@ -297,32 +268,4 @@ function flip(el) {
     ],
     { duration: 260, easing: "ease-in-out" }
   );
-}
-
-function shake(el) {
-  el.animate(
-    [
-      { transform: "translateX(0)" },
-      { transform: "translateX(-4px)" },
-      { transform: "translateX(4px)" },
-      { transform: "translateX(0)" }
-    ],
-    { duration: 200 }
-  );
-}
-
-function toast(msg) {
-  toastEl.hidden = false;
-  toastEl.textContent = msg;
-
-  setTimeout(() => {
-    toastEl.hidden = true;
-  }, 1200);
-}
-
-function updateHud() {
-  const level = LEVEL_ORDER[levelIndex];
-  hudDifficulty.textContent = capitalize(level);
-  hudRound.textContent = String(round);
-  hudBest.textContent = "—";
 }
