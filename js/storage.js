@@ -66,7 +66,8 @@ const StorageAPI = (() => {
       stats: {
         totalLogins: 0,
         points: 0,
-        lastPlayed: null
+        lastPlayed: null,
+        memoryLevel: "easy"
       }
     };
 

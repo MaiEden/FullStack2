@@ -51,14 +51,27 @@ function renderHome() {
   kpiPlayers.textContent = String(users.length);
 
   // כפתורים למשחקים שעובדים בעתיד:
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-game]");
-    if (!btn) return;
+  // ניווט למשחקים פעילים
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-game]");
+  if (!btn) return;
 
-    const game = btn.dataset.game;
-    if (btn.dataset.status === "dev") return;
+  if (btn.dataset.status !== "live") return;
 
-    // כרגע אין דפי משחקים — זה שלד:
-    alert(`שלד: בעתיד ננווט למשחק "${game}"`);
-  });
+  const game = btn.dataset.game;
+
+  switch (game) {
+    case "memory":
+      location.href = "memory.html";
+      break;
+
+    case "simon":
+      location.href = "simon.html";
+      break;
+
+    default:
+      console.warn("Unknown game:", game);
+  }
+});
+
 }
