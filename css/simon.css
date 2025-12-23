@@ -1,228 +1,154 @@
 /* Layout */
-.game-wrap{ padding: 18px 0 8px; }
-.game-card{ padding: 14px; }
-.game-top{ padding: 6px 6px 14px; }
+.game-wrap { padding: 18px 0 8px; }
+.game-card { padding: 14px; }
+.game-top { padding: 6px 6px 14px; }
 
-.game-grid{
-  display:grid;
+.game-grid {
+  display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 12px;
   align-items: start;
 }
 
-@media (max-width: 900px){
-  .game-grid{ grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .game-grid { grid-template-columns: 1fr; }
 }
 
-.board-area{
-  display:grid;
-  place-items:center;
+.board-area {
+  display: grid;
+  place-items: center;
   padding: 6px;
 }
 
 /* Wheel */
-.wheel{
+.wheel {
   width: min(440px, 100%);
-  aspect-ratio: 1 / 1;
-  border-radius: 999px;
-  border: 1px solid rgba(234,240,255,.10);
-  background: rgba(255,255,255,.035);
-  box-shadow: 0 18px 50px rgba(0,0,0,.25);
-  display:grid;
-  place-items:center;
-  position: relative;
-  overflow:hidden;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(234, 240, 255, 0.1);
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
 }
 
-.wheel::before{
-  content:"";
-  position:absolute;
-  inset:-20%;
-  background: radial-gradient(65% 65% at 30% 20%, rgba(255,255,255,.10), transparent 55%);
-  pointer-events:none;
-  opacity:.9;
+.wheel.win {
+  animation: winPulse 0.9s ease-in-out 2;
 }
 
-.wheel::after{
-  content:"";
-  position:absolute;
-  inset:10px;
-  border-radius:999px;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.06),
-    0 0 34px rgba(120,255,245,.10),
-    0 0 52px rgba(178,120,255,.08);
-  pointer-events:none;
-}
-
-.wheel.win{
-  animation: winPulse .9s ease-in-out 2;
-}
-
-@keyframes winPulse{
-  0%{ box-shadow: 0 18px 50px rgba(0,0,0,.25); }
-  50%{
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,.08),
-      0 0 46px rgba(140,120,255,.25),
-      0 18px 50px rgba(0,0,0,.25);
-  }
-  100%{ box-shadow: 0 18px 50px rgba(0,0,0,.25); }
+@keyframes winPulse {
+  0%, 100% { box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25); }
+  50% { box-shadow: 0 0 46px rgba(140, 120, 255, 0.25), 0 18px 50px rgba(0, 0, 0, 0.25); }
 }
 
 /* SVG */
-.wheel svg{
-  width:100%;
-  height:100%;
-  display:block;
+.wheel svg {
+  width: 100%;
+  height: 100%;
 }
 
-/* Remove click outlines */
 .wheel svg,
-.wheel svg *{
-  outline:none;
+.wheel svg * {
+  outline: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-.seg{
-  cursor:pointer;
-  opacity:.96;
-  transition: filter .12s ease, opacity .12s ease, transform .12s ease;
-  filter: drop-shadow(0 14px 22px rgba(0,0,0,.35));
+.seg {
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity 0.15s ease, filter 0.15s ease;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  rx: 8;
 }
 
-.seg:hover{ opacity: 1; }
-
-.seg:focus{ outline:none; }
-.seg:focus-visible{
-  filter:
-    drop-shadow(0 0 0 rgba(0,0,0,0))
-    drop-shadow(0 0 22px rgba(140,120,255,.35));
-}
-
-.seg.is-lit{
+.seg:hover {
   opacity: 1;
-  transform: translateZ(0) scale(1.004);
-  filter:
-    drop-shadow(0 0 10px rgba(255,255,255,.22))
-    drop-shadow(0 0 32px rgba(255,255,255,.12))
-    drop-shadow(0 0 64px rgba(140,120,255,.14))
-    drop-shadow(0 18px 26px rgba(0,0,0,.35));
 }
 
-/* Hub */
-.hub{
-  fill: rgba(8,10,16,.90);
-  stroke: rgba(234,240,255,.12);
+.seg:focus {
+  outline: none;
+}
+
+.seg.lit {
+  opacity: 1;
+  filter: 
+    drop-shadow(0 0 12px rgba(255, 255, 255, 0.3))
+    drop-shadow(0 0 24px currentColor)
+    drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+}
+
+.hub {
+  fill: rgba(8, 10, 16, 0.9);
+  stroke: rgba(234, 240, 255, 0.12);
   stroke-width: 2;
-  filter: drop-shadow(0 12px 22px rgba(0,0,0,.40));
-}
-
-.hubGlow{
-  fill: rgba(255,255,255,.04);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
 }
 
 /* Sidebar */
-.side{
+.side {
   padding: 14px;
   border-radius: var(--radius2);
 }
 
-.hud{
-  display:grid;
+.hud {
+  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
-.hud-item{
+.hud-item {
   padding: 10px 12px;
   border-radius: var(--radius);
-  border: 1px solid rgba(234,240,255,.10);
-  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(234, 240, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
 }
 
-.hud-num{
+.hud-num {
   font-size: 1.15rem;
   font-weight: 850;
 }
-.hud-lbl{
+
+.hud-lbl {
   color: var(--muted);
   margin-top: 4px;
-  font-size: .92rem;
+  font-size: 0.92rem;
 }
 
-.difficulty-bar{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
+.difficulty-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
   margin-top: 12px;
 }
 
-.difficulty-bar .btn{ min-width: 110px; }
-.difficulty-bar .btn.is-active{
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 0 26px rgba(140,120,255,.18);
+.difficulty-bar .btn {
+  min-width: 110px;
 }
-.difficulty-bar .btn:disabled{
-  opacity: .55;
+
+.difficulty-bar .btn.is-active {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 26px rgba(140, 120, 255, 0.18);
+}
+
+.difficulty-bar .btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.controls{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:flex-start;
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
   margin-top: 12px;
 }
 
-.hint{
+.hint {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid rgba(234,240,255,.08);
+  border-top: 1px solid rgba(234, 240, 255, 0.08);
 }
 
-.muted{
+.muted {
   color: var(--muted);
-  font-size: .95rem;
+  font-size: 0.95rem;
 }
-
-/* ------------------- SVG style helpers (JS toggles classes) ------------------- */
-
-/* Rings */
-.wheelRing{
-  stroke: rgba(234,240,255,0.10);
-  stroke-width: 2;
-}
-.wheelRing--outer{ fill: rgba(255,255,255,0.015); }
-.wheelRing--inner{ fill: rgba(255,255,255,0.02); }
-
-/* Segment overlays */
-.segSpec{
-  fill: url(#spec);
-  opacity: .22;
-  pointer-events: none;
-}
-.segVign{
-  fill: rgba(0,0,0,0.10);
-  opacity: .35;
-  pointer-events: none;
-}
-
-/* SVG defs: glow filter sizing */
-.svgFilter--glow{
-  x: -50%;
-  y: -50%;
-  width: 200%;
-  height: 200%;
-}
-
-/* Specular gradient geometry + stop colors */
-.svgGradient--spec{
-  cx: 30%;
-  cy: 22%;
-  r: 85%;
-}
-.svgStop--spec0{ stop-color: rgba(255,255,255,0.55); }
-.svgStop--spec1{ stop-color: rgba(255,255,255,0.10); }
-.svgStop--spec2{ stop-color: rgba(255,255,255,0); }
-

@@ -7,13 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function wireGlobalActions() {
-  // פעולות מה-Header שמגיע דרך embed
   document.addEventListener("click", (e) => {
     const a = e.target.closest("[data-action]");
     if (!a) return;
 
-    const action = a.dataset.action;
-    if (action === "logout") {
+    if (a.dataset.action === "logout") {
       e.preventDefault();
       StorageAPI.clearSession();
       location.href = "index.html";
