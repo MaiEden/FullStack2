@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>NEON ARCADE • Neon Memory Rush</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/memory.css" />
+</head>
+
+<body>
+
+  <embed src="header.html" class="embed embed--header" />
+
+  <main class="container game-wrap">
+    <section class="card glow game-card">
+
+      <header class="game-header">
+        <h1 class="h1">Neon Memory Rush</h1>
+        <p class="sub">Match the pairs using memory and motion</p>
+
+        <div class="game-stats">
+          <div>Moves: <span id="moves">0</span></div>
+          <div>Matches: <span id="matches">0</span></div>
+        </div>
+
+        <div class="difficulty">
+          <strong>Your level:</strong>
+          <span id="userLevel">Easy</span>
+        </div>
+      </header>
+
+      <div class="game-area">
+        <section id="board" class="board"></section>
+
+        <aside class="matched-stack">
+          <h3>Matched</h3>
+          <div id="stack"></div>
+        </aside>
+      </div>
+
+      <div class="game-footer">
+        <button id="restart" class="btn btn--primary">Restart</button>
+      </div>
+
+    </section>
+  </main>
+
+  <embed src="footer.html" class="embed embed--footer" />
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/memory.js"></script>
+</body>
+</html>
