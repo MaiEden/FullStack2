@@ -15,31 +15,25 @@ document.addEventListener("DOMContentLoaded", () => {
   initSimon();
 });
 
+// Redirect to index if no valid session
 function enforceSession(){
   const session = StorageAPI.getSession();
   if (!session?.userId) location.href = "index.html";
 }
 
-function showToast(el, msg, type){
+function showToast(el, msg){
   el.textContent = msg;
-
-  // Keep base class and only toggle "modifier" classes
-  el.classList.add("toast");
-  el.classList.remove("toast-ok", "toast-bad");
-
-  if (type){
-    el.classList.add(`toast-${type}`);
-  }
-
   el.hidden = false;
 }
+
 function hideToast(el){
   el.hidden = true;
   el.textContent = "";
-  el.classList.add("toast");
-  el.classList.remove("toast-ok", "toast-bad");
 }
+
+/* ----------------------- Main Simon Logic ----------------------- */
 function initSimon(){
+  // UI elements
   const wheelHost = document.querySelector("#wheel");
   const toast = document.querySelector("#toast");
 
@@ -54,25 +48,26 @@ function initSimon(){
   const hudRound = document.querySelector("#hudRound");
   const hudBest = document.querySelector("#hudBest");
 
+  // Difficulty configurations
   const DIFFS = {
-    easy:   { label: "Easy",   pads: 4, maxRounds: 2 },
-    medium: { label: "Medium", pads: 5, maxRounds: 20 },
-    hard:   { label: "Hard",   pads: 6, maxRounds: 25 },
+    easy:   { label: "Easy",   pads: 4, maxRounds: 10 },
+    medium: { label: "Medium", pads: 5, maxRounds: 15 },
+    hard:   { label: "Hard",   pads: 6, maxRounds: 20 },
   };
   const DIFF_ORDER = ["easy", "medium", "hard"];
 
   const session = StorageAPI.getSession();
   const userId = session.userId;
 
-  const audio = makeAudio();
-
+  const audio = new audioMaker();
   // Persistent user state
   let currentDiff = "easy";
   let unlockedMax = "easy";
   let bestByDiff = { easy: 0, medium: 0, hard: 0 };
 
   // Run state
-  let segEls = [];          // interactive SVG segment elements
+  //??????
+  let segEls = [];
   let sequence = [];
   let userIndex = 0;
   let round = 0;
@@ -99,7 +94,7 @@ function initSimon(){
       if (!diff) return;
 
       if (!isDiffUnlocked(diff)){
-        showToast(toast, "That difficulty is locked. Finish the current mode to unlock it.", "bad");
+        showToast(toast, "That difficulty is locked. Finish the current mode to unlock it.");
         return;
       }
 
@@ -108,7 +103,7 @@ function initSimon(){
       buildWheelForDifficulty(currentDiff, /*soft*/ false);
       renderNavLocking();
       renderHUD();
-      showToast(toast, "Difficulty changed. Press Start to play.", "");
+      showToast(toast, "Difficulty changed. Press Start to play.");
     });
   });
 
@@ -119,7 +114,7 @@ function initSimon(){
     btnStart.disabled = true;
     btnRestart.disabled = false;
 
-    showToast(toast, "Get ready…", "");
+    showToast(toast, "Get ready…");
     await sleep(420);
 
     await nextRound();
@@ -196,14 +191,14 @@ function initSimon(){
     // Extend sequence
     sequence.push(randInt(0, cfg.pads - 1));
 
-    showToast(toast, `Round ${round}: watch the sequence…`, "");
+    showToast(toast, `Round ${round}: watch the sequence…`);
     await sleep(260);
 
     await playSequence();
 
     hideToast(toast);
     acceptingInput = true;
-    showToast(toast, "Your turn!", "ok");
+    showToast(toast, "Your turn!");
   }
 
   async function playSequence(){
@@ -239,7 +234,7 @@ function initSimon(){
   }
 
   async function fail(){
-    showToast(toast, "Wrong segment! Press Start to try again.", "bad");
+    showToast(toast, "Wrong segment! Press Start to try again.");
     await errorPulse();
 
     btnStart.disabled = false;
@@ -260,7 +255,7 @@ function initSimon(){
     segEls.forEach(s => s.classList.add("is-lit"));
     audio.win();
 
-    showToast(toast, "You won! Advancing to the next difficulty…", "ok");
+    showToast(toast, "You won! Advancing to the next difficulty…");
     await sleep(780);
 
     segEls.forEach(s => s.classList.remove("is-lit"));
@@ -295,7 +290,7 @@ function initSimon(){
       btnRestart.disabled = false;
       acceptingInput = false;
 
-      showToast(toast, "All difficulties completed! Press Start to play again.", "ok");
+      showToast(toast, "All difficulties completed! Press Start to play again.");
     }
   }
 
@@ -358,6 +353,7 @@ function initSimon(){
 
   /* -------------------- Persistence (per user) -------------------- */
   function loadUserSimonState(){
+    // get user
     const users = StorageAPI.getUsers();
     const idx = users.findIndex(u => u.id === userId);
     if (idx < 0) return;
@@ -368,9 +364,6 @@ function initSimon(){
     currentDiff = simon.currentDiff || "easy";
     unlockedMax = simon.unlockedMax || "easy";
     bestByDiff = simon.bestByDiff || { easy: 0, medium: 0, hard: 0 };
-
-    if (!DIFFS[currentDiff]) currentDiff = "easy";
-    if (!DIFFS[unlockedMax]) unlockedMax = "easy";
 
     bestByDiff.easy = Number(bestByDiff.easy || 0);
     bestByDiff.medium = Number(bestByDiff.medium || 0);
@@ -618,58 +611,4 @@ function donutSegmentPath(cx, cy, rOuter, rInner, a0, a1){
 
 function polar(cx, cy, r, a){
   return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
-}
-
-
-
-/* ----------------------------- Audio ----------------------------- */
-function makeAudio(){
-  const Ctx = window.AudioContext || window.webkitAudioContext;
-  const ctx = Ctx ? new Ctx() : null;
-
-  const baseFreqs = [270, 330, 390, 470, 560, 650];
-
-  function tone(freq, dur = 0.22, type = "sine", gainPeak = 0.18){
-    if (!ctx) return;
-    try{
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = type;
-      o.frequency.value = freq;
-
-      g.gain.value = 0.0001;
-      o.connect(g);
-      g.connect(ctx.destination);
-
-      const t = ctx.currentTime;
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(gainPeak, t + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-
-      o.start(t);
-      o.stop(t + dur + 0.02);
-    }catch{}
-  }
-
-  function beep(padIndex){
-    const freq = baseFreqs[padIndex % baseFreqs.length];
-    tone(freq, 0.22, "sine", 0.18);
-  }
-
-  function error(){
-    tone(120, 0.18, "square", 0.22);
-  }
-
-  function win(){
-    // Simple chord-like arpeggio
-    if (!ctx) return;
-    const seq = [520, 660, 780];
-    let t = 0;
-    seq.forEach((f) => {
-      setTimeout(() => tone(f, 0.18, "sine", 0.20), t);
-      t += 140;
-    });
-  }
-
-  return { beep, error, win };
 }
