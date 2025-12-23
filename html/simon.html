@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEON ARCADE • Simon Says</title>
+
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/simon.css" />
+</head>
+
+<body>
+  <div id="bg-slot"></div>
+  <div id="header-slot"></div>
+
+  <main class="container game-wrap">
+    <section class="card glow game-card">
+      <header class="game-top">
+        <div>
+          <h1>Simon Says</h1>
+          <p>Watch the sequence, then repeat it.</p>
+        </div>
+      </header>
+
+      <div class="game-grid">
+        <!-- LEFT: circular board -->
+        <div class="board-area">
+          <div class="wheel card" id="wheel" aria-label="Simon wheel"></div>
+        </div>
+
+        <!-- RIGHT: sidebar controls + HUD + messages -->
+        <aside class="side card">
+          <div class="hud">
+            <div class="hud-item">
+              <div class="hud-num" id="hudDifficulty">Easy</div>
+              <div class="hud-lbl">Difficulty</div>
+            </div>
+
+            <div class="hud-item">
+              <div class="hud-num" id="hudRound">0</div>
+              <div class="hud-lbl">Round</div>
+            </div>
+
+            <div class="hud-item">
+              <div class="hud-num" id="hudBest">0</div>
+              <div class="hud-lbl">Best</div>
+            </div>
+          </div>
+
+          <div class="difficulty-bar">
+            <button class="btn" id="btnEasy" data-diff="easy">Easy</button>
+            <button class="btn" id="btnMedium" data-diff="medium">Medium</button>
+            <button class="btn" id="btnHard" data-diff="hard">Hard</button>
+          </div>
+
+          <div class="controls">
+            <button class="btn btn-primary" id="btnStart">Start</button>
+            <button class="btn" id="btnRestart" disabled>Restart</button>
+          </div>
+
+          <div id="toast" class="toast" hidden></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-slot"></div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/audioMaker.js"></script>
+  <script src="../js/simon.js"></script>
+  <script src="../js/include.js"></script>
+</body>
+</html>
