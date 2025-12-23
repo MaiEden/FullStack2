@@ -1,27 +1,11 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-  wireGlobalActions();
-
   // Initialize page-specific logic based on data-page attribute
   const page = document.body.dataset.page;
   if (page === "login") initLogin();
   if (page === "register") initRegister();
 });
-
-function wireGlobalActions() {
-  // Handle global action logout coming from embedded header
-  document.addEventListener("click", (e) => {
-    const a = e.target.closest("[data-action]");
-    if (!a) return;
-
-    const action = a.dataset.action;
-    if (action === "logout") {
-      StorageAPI.clearSession();
-      location.href = "index.html";
-    }
-  });
-}
 
 // Display a toast message (success / error)
 function showToast(el, msg, type) {

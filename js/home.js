@@ -2,22 +2,8 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   enforceSession();
-  wireGlobalActions();
   renderHome();
 });
-
-function wireGlobalActions() {
-  document.addEventListener("click", (e) => {
-    const a = e.target.closest("[data-action]");
-    if (!a) return;
-
-    if (a.dataset.action === "logout") {
-      e.preventDefault();
-      StorageAPI.clearSession();
-      location.href = "index.html";
-    }
-  });
-}
 
 function enforceSession() {
   const session = StorageAPI.getSession();
