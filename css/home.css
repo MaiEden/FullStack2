@@ -14,11 +14,11 @@
   padding: 12px;
   border-radius: var(--radius);
 }
-.kpi__num{
+.kpi-num{
   font-size: 1.35rem;
   font-weight: 850;
 }
-.kpi__lbl{
+.kpi-lbl{
   color: var(--muted);
   margin-top: 4px;
   font-size:.92rem;
@@ -41,36 +41,22 @@
   display: flex;
   flex-direction: column;
 }
-.tile__title{
+.tile-title{
   font-weight: 850;
   margin: 0 0 6px;
 }
-.tile__desc{
+.tile-desc{
   margin:0;
   color: var(--muted);
   line-height:1.5;
-    flex: 1;
+  flex: 1;
 }
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  margin-top: 10px;
-  padding: 8px 10px;
-  border-radius: 999px;
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.04);
-  color: var(--muted);
-  font-size:.92rem;
-}
-.badge--dev{ border-color: rgba(255,255,255,.18); }
-.badge--live{ border-color: rgba(124,255,178,.28); color: rgba(124,255,178,.9); }
-/* Buttons container inside game tiles (replaces inline margin-top) */
+
 .tile-actions{
   margin-top: 10px;
 }
 
-.tile__media{
+.tile-media{
   border-radius: 16px;
   overflow: hidden;
   aspect-ratio: 16 / 9;
@@ -79,7 +65,7 @@
   background: rgba(0,0,0,.25);
 }
 
-.tile__media img{
+.tile-media img{
   width: 100%;
   height: 100%;
   object-fit: cover;

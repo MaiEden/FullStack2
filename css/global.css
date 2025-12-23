@@ -6,7 +6,7 @@
   --panel: rgba(255,255,255,.06);
 
   --text:#EAF0FF;
-  --muted: rgba(239, 243, 254, 0.65);
+  --muted: rgba(239, 243, 254, 0.733);
   --line: rgba(234,240,255,.14);
 
   --neonPink:#ff3bd4;
@@ -206,10 +206,8 @@ p{
   box-shadow: 0 0 0 6px rgba(34,211,238,.08);
 }
 
-hr.sep{
-  border:0;
-  border-top:1px solid var(--line);
-  margin:14px 0;
+.input::placeholder{
+  color: rgba(234,240,255,.35);
 }
 
 /* =========================
@@ -218,7 +216,7 @@ hr.sep{
 .neon-bg{
   position:fixed;
   inset:0;
-  z-index:-1;
+  z-index:-2;
   pointer-events:none;
   overflow:hidden;
 }
@@ -226,7 +224,7 @@ hr.sep{
 .neon-bg .orb{
   position:absolute;
   border-radius:50%;
-  background: transparent;
+  background: transparent;/* Transparent fill (outline only) */
   border: 3px solid currentColor;
   opacity:.95;
   filter:
@@ -236,7 +234,7 @@ hr.sep{
   animation: floaty 12s ease-in-out infinite;
 }
 
-/* גדלים/צבעים/מיקומים */
+/* location/size/color/animation */
 .o1{ top:12%; left:6%;  width:220px; height:220px; color:var(--neonCyan);  animation-duration:14s; }
 .o2{ top:8%;  left:55%; width:120px; height:120px; color:var(--neonPink);  animation-duration:10s; animation-delay:-6s; }
 .o3{ top:18%; right:8%; width:180px; height:180px; color:var(--neonPurple);animation-duration:16s; animation-delay:-4s; }
@@ -252,8 +250,4 @@ hr.sep{
   0%   { transform: translate(0,0) rotate(0deg); }
   50%  { transform: translate(18px,-22px) rotate(6deg); }
   100% { transform: translate(0,0) rotate(0deg); }
-}
-
-@media (prefers-reduced-motion: reduce){
-  .neon-bg .shape{ animation:none; }
 }

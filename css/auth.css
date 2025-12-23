@@ -3,7 +3,7 @@
 }
 .auth-card{
   padding: 18px;
-  max-width: 720px;   /* controls card width */
+  max-width: 720px;
   margin-inline: auto;
   padding: 20px;
 }
@@ -19,13 +19,11 @@
   flex-wrap:wrap;
 }
 
-/* Auth page panels (replaces inline padding on card elements) */
 .auth-panel{
   padding: 16px;
   padding-top: 0%;
 }
 
-
-.actions--spaced{
+.actions-spaced{
   margin-top: 14px;
 }
