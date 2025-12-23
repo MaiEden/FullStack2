@@ -1,77 +1,133 @@
 "use strict";
 
-/* ===== Elements ===== */
+/* =========================
+   Elements
+========================= */
 const board = document.getElementById("board");
 const stack = document.getElementById("stack");
+
 const movesEl = document.getElementById("moves");
 const matchesEl = document.getElementById("matches");
-const restartBtn = document.getElementById("restart");
-const userLevelEl = document.getElementById("userLevel");
 
-/* ===== Game State ===== */
+const hudDifficulty = document.getElementById("hudDifficulty");
+const hudRound = document.getElementById("hudRound");
+const hudBest = document.getElementById("hudBest");
+
+const btnStart = document.getElementById("btnStart");
+const btnRestart = document.getElementById("btnRestart");
+const toastEl = document.getElementById("toast");
+
+/* =========================
+   Config
+========================= */
+const EMOJIS = ["🚀","🛸","🌌","⚡","🎮","👾","🧠","💎","🔮","🔥","🛰️","🪐"];
+
+const LEVEL_ORDER = ["easy", "medium", "hard"];
+
+const LEVELS = {
+  easy:   { pairs: 4, cols: 4 },
+  medium: { pairs: 6, cols: 4 },
+  hard:   { pairs: 8, cols: 4 }
+};
+
+/* =========================
+   State
+========================= */
 let firstCard = null;
 let secondCard = null;
 let lock = false;
+
 let moves = 0;
 let matches = 0;
 let totalPairs = 0;
+
 let stackOffset = 0;
-let currentLevel = "easy";
 
-/* ===== Data ===== */
-const EMOJIS = ["🚀","🛸","🌌","⚡","🎮","👾","🧠","💎","🔮","🔥"];
+let started = false;
+let levelIndex = 0;
+let round = 1;
 
-const LEVELS = {
-  easy: 4,
-  medium: 6,
-  hard: 8
+const bestMoves = {
+  easy: null,
+  medium: null,
+  hard: null
 };
 
-const COLS_BY_LEVEL = {
-  easy: 4,
-  medium: 4,
-  hard: 4
-};
+/* =========================
+   Storage helpers
+========================= */
+function getCurrentUser() {
+  const session = StorageAPI.getSession();
+  if (!session) return null;
 
-/* ===== Entry ===== */
-restartBtn.addEventListener("click", () => startGame(currentLevel));
+  const users = StorageAPI.getUsers();
+  return users.find(u => u.id === session.userId) || null;
+}
 
-initGame();
+function getUserLevelIndex() {
+  const user = getCurrentUser();
+  if (!user) return 0;
 
-/* ===== Init ===== */
-function initGame() {
+  if (!user.stats.memoryLevel) {
+    user.stats.memoryLevel = "easy";
+    StorageAPI.setUsers(StorageAPI.getUsers());
+  }
+
+  const idx = LEVEL_ORDER.indexOf(user.stats.memoryLevel);
+  return idx >= 0 ? idx : 0;
+}
+
+function saveUserLevel(level) {
+  const users = StorageAPI.getUsers();
   const session = StorageAPI.getSession();
   if (!session) return;
 
-  const users = StorageAPI.getUsers();
   const me = users.find(u => u.id === session.userId);
   if (!me) return;
 
-  currentLevel = resolveLevel(me.stats.points);
-  userLevelEl.textContent = capitalize(currentLevel);
-
-  startGame(currentLevel);
+  me.stats.memoryLevel = level;
+  me.stats.lastPlayed = new Date().toISOString();
+  StorageAPI.setUsers(users);
 }
 
-/* ===== Difficulty Resolver ===== */
-function resolveLevel(points) {
-  if (points >= 50) return "hard";
-  if (points >= 20) return "medium";
-  return "easy";
-}
+/* =========================
+   Init
+========================= */
+levelIndex = getUserLevelIndex();
+round = levelIndex + 1;
+updateHud();
 
-/* ===== Game Flow ===== */
-function startGame(level) {
+btnStart.addEventListener("click", () => {
+  started = true;
+  btnStart.disabled = true;
+  btnRestart.disabled = false;
+  startGame();
+});
+
+btnRestart.addEventListener("click", () => {
+  if (!started) return;
+  startGame();
+});
+
+/* =========================
+   Game Flow
+========================= */
+function startGame() {
   resetState();
 
-  totalPairs = LEVELS[level];
+  const level = LEVEL_ORDER[levelIndex];
+  const cfg = LEVELS[level];
+  totalPairs = cfg.pairs;
+
+  hudDifficulty.textContent = capitalize(level);
+  hudRound.textContent = String(round);
+
   const symbols = shuffle([
     ...EMOJIS.slice(0, totalPairs),
     ...EMOJIS.slice(0, totalPairs)
   ]);
 
-  board.style.gridTemplateColumns =
-    `repeat(${COLS_BY_LEVEL[level]}, 80px)`;
+  board.style.gridTemplateColumns = `repeat(${cfg.cols}, 80px)`;
 
   symbols.forEach(symbol => {
     const card = document.createElement("div");
@@ -87,17 +143,27 @@ function startGame(level) {
 
     card.addEventListener("click", () => reveal(card));
     board.appendChild(card);
+
+    // entrance animation
+    card.animate(
+      [
+        { transform: "translateY(10px)", opacity: 0 },
+        { transform: "translateY(0)", opacity: 1 }
+      ],
+      { duration: 200, easing: "ease-out" }
+    );
   });
 }
 
-/* ===== Gameplay ===== */
+/* =========================
+   Gameplay
+========================= */
 function reveal(card) {
-  if (lock ||
-      card.classList.contains("revealed") ||
-      card.classList.contains("matched") ||
-      card.classList.contains("placeholder")) return;
+  if (!started || lock) return;
+  if (card.classList.contains("revealed")) return;
 
   card.classList.add("revealed");
+  flip(card);
 
   if (!firstCard) {
     firstCard = card;
@@ -107,13 +173,10 @@ function reveal(card) {
   secondCard = card;
   lock = true;
 
-  firstCard.classList.add("lift");
-  secondCard.classList.add("lift");
-
   moves++;
   movesEl.textContent = moves;
 
-  setTimeout(checkMatch, 600);
+  setTimeout(checkMatch, 500);
 }
 
 function checkMatch() {
@@ -121,53 +184,85 @@ function checkMatch() {
     firstCard.dataset.symbol === secondCard.dataset.symbol;
 
   if (isMatch) {
-  handleMatch(firstCard, secondCard);
-  matches++;
-  matchesEl.textContent = matches;
+    handleMatch(firstCard, secondCard);
+    matches++;
+    matchesEl.textContent = matches;
 
-  if (matches === totalPairs) {
-    finishLevel(); // ⬅️ כאן הקסם
-    return;
-  }
-}
- else {
-    returnToBoard(firstCard, secondCard);
-  }
+    if (matches === totalPairs) {
+      finishLevel();
+      return;
+    }
 
-  setTimeout(() => {
     resetPick();
     lock = false;
-  }, 700);
+  } else {
+    shake(firstCard);
+    shake(secondCard);
+
+    setTimeout(() => {
+      firstCard.classList.remove("revealed");
+      secondCard.classList.remove("revealed");
+      resetPick();
+      lock = false;
+    }, 500);
+  }
 }
 
-/* ===== Behaviors ===== */
-function returnToBoard(c1, c2) {
+/* =========================
+   Level Finish
+========================= */
+function finishLevel() {
+  lock = true;
+
+  const level = LEVEL_ORDER[levelIndex];
+  if (bestMoves[level] == null || moves < bestMoves[level]) {
+    bestMoves[level] = moves;
+    hudBest.textContent = moves;
+  }
+
+  toast(`${capitalize(level)} completed!`);
+
   setTimeout(() => {
-    c1.classList.remove("revealed", "lift");
-    c2.classList.remove("revealed", "lift");
-  }, 400);
+    levelIndex++;
+
+    if (levelIndex >= LEVEL_ORDER.length) {
+      toast("You finished all levels! 🏆");
+      btnStart.disabled = false;
+      return;
+    }
+
+    const nextLevel = LEVEL_ORDER[levelIndex];
+    saveUserLevel(nextLevel);
+
+    round = levelIndex + 1;
+    startGame();
+    lock = false;
+  }, 900);
 }
 
+/* =========================
+   Helpers
+========================= */
 function handleMatch(c1, c2) {
   [c1, c2].forEach(card => {
-    card.classList.add("placeholder");
-    card.classList.remove("lift");
-
     const clone = card.cloneNode(true);
-    clone.classList.remove("placeholder");
-    clone.classList.add("matched");
-
     clone.style.position = "absolute";
     clone.style.top = `${stackOffset}px`;
     clone.style.left = `${stackOffset}px`;
-
     stack.appendChild(clone);
+
+    clone.animate(
+      [
+        { transform: "scale(0.9)", opacity: 0 },
+        { transform: "scale(1)", opacity: 1 }
+      ],
+      { duration: 200 }
+    );
   });
 
   stackOffset += 6;
 }
 
-/* ===== Helpers ===== */
 function resetPick() {
   firstCard = null;
   secondCard = null;
@@ -179,9 +274,10 @@ function resetState() {
   stackOffset = 0;
   moves = 0;
   matches = 0;
+  lock = false;
+
   movesEl.textContent = "0";
   matchesEl.textContent = "0";
-  resetPick();
 }
 
 function shuffle(arr) {
@@ -192,30 +288,41 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function finishLevel() {
-  const session = StorageAPI.getSession();
-  if (!session) return;
-
-  const users = StorageAPI.getUsers();
-  const me = users.find(u => u.id === session.userId);
-  if (!me) return;
-
-  // ניקוד לפי רמה
-  let gainedPoints = 10;
-  if (currentLevel === "medium") gainedPoints = 15;
-  if (currentLevel === "hard") gainedPoints = 20;
-
-  me.stats.points += gainedPoints;
-  StorageAPI.setUsers(users);
-
-  // חישוב רמה חדשה
-  const newLevel = resolveLevel(me.stats.points);
-  userLevelEl.textContent = capitalize(newLevel);
-
-  // מעבר אוטומטי לשלב הבא (חלק!)
-  setTimeout(() => {
-    currentLevel = newLevel;
-    startGame(currentLevel);
-  }, 800);
+function flip(el) {
+  el.animate(
+    [
+      { transform: "rotateY(0deg)" },
+      { transform: "rotateY(90deg)" },
+      { transform: "rotateY(0deg)" }
+    ],
+    { duration: 260, easing: "ease-in-out" }
+  );
 }
 
+function shake(el) {
+  el.animate(
+    [
+      { transform: "translateX(0)" },
+      { transform: "translateX(-4px)" },
+      { transform: "translateX(4px)" },
+      { transform: "translateX(0)" }
+    ],
+    { duration: 200 }
+  );
+}
+
+function toast(msg) {
+  toastEl.hidden = false;
+  toastEl.textContent = msg;
+
+  setTimeout(() => {
+    toastEl.hidden = true;
+  }, 1200);
+}
+
+function updateHud() {
+  const level = LEVEL_ORDER[levelIndex];
+  hudDifficulty.textContent = capitalize(level);
+  hudRound.textContent = String(round);
+  hudBest.textContent = "—";
+}
