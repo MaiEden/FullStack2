@@ -3,50 +3,55 @@
 document.addEventListener("DOMContentLoaded", () => {
   wireGlobalActions();
 
+  // Initialize page-specific logic based on data-page attribute
   const page = document.body.dataset.page;
   if (page === "login") initLogin();
   if (page === "register") initRegister();
 });
 
 function wireGlobalActions() {
-  // פעולות מה-Header שמגיע דרך embed
+  // Handle global action logout coming from embedded header
   document.addEventListener("click", (e) => {
     const a = e.target.closest("[data-action]");
     if (!a) return;
 
     const action = a.dataset.action;
     if (action === "logout") {
-      e.preventDefault();
       StorageAPI.clearSession();
       location.href = "index.html";
     }
   });
 }
 
+// Display a toast message (success / error)
 function showToast(el, msg, type) {
   el.textContent = msg;
-  el.className = `toast ${type ? "toast--" + type : ""}`.trim();
+  el.className = `toast ${type ? "toast-" + type : ""}`.trim();
   el.hidden = false;
 }
 
+// Check whether a username is currently locked
 function isLocked(username) {
   const locks = StorageAPI.getLocks();
   const key = username.toLowerCase();
   const rec = locks[key];
-  if (!rec || !rec.lockedUntilISO) return false;
-  return new Date(rec.lockedUntilISO) > new Date();
+  // if no record or no lock time, not locked
+  if (!rec || !rec.lockedUntil) return false;
+  // check if current time is before lockedUntil
+  return new Date(rec.lockedUntil) > new Date();
 }
 
+// Register a failed login attempt and apply temporary lock if needed
 function registerFail(username) {
   const locks = StorageAPI.getLocks();
   const key = username.toLowerCase();
-  const rec = locks[key] || { failed: 0, lockedUntilISO: null };
+  const rec = locks[key] || { failed: 0, lockedUntil: null };
   rec.failed += 1;
 
-  // שלד: אחרי 3 ניסיונות - נעילה ל-60 שניות
+  // Skeleton logic: after 3 failed attempts, lock for 60 seconds
   if (rec.failed >= 3) {
     const until = new Date(Date.now() + 60 * 1000);
-    rec.lockedUntilISO = until.toISOString();
+    rec.lockedUntil = until.toISOString();
     rec.failed = 0;
   }
 
@@ -54,53 +59,66 @@ function registerFail(username) {
   StorageAPI.setLocks(locks);
 }
 
+// Clear failed login attempts after successful authentication
 function clearFails(username) {
   const locks = StorageAPI.getLocks();
   const key = username.toLowerCase();
   if (locks[key]) {
     locks[key].failed = 0;
-    locks[key].lockedUntilISO = null;
+    locks[key].lockedUntil = null;
     StorageAPI.setLocks(locks);
   }
 }
 
 function initLogin() {
-  // אם כבר יש session תקין - נכנסים לבית
   const session = StorageAPI.getSession();
+  // If a valid session already exists, redirect to home
   if (session?.userId) {
-    location.href = "home.html";
-    return;
+    // If the session has an expiry and it already passed clear it and stay on login
+    if (session.expiresAt && new Date(session.expiresAt) <= new Date()) {
+      StorageAPI.clearSession();
+    } else {
+      // Session is valid -> go to home
+      location.href = "home.html";
+      return;
+    }
   }
 
   const form = document.querySelector("#loginForm");
   const toast = document.querySelector("#toast");
 
   form.addEventListener("submit", (e) => {
-    e.preventDefault();
 
     const username = form.username.value.trim();
     const password = form.password.value;
 
+    // Check required fields
     if (!username || !password) {
-      showToast(toast, "נא למלא שם משתמש וסיסמה.", "bad");
+      showToast(toast, "please fill in all fields.", "bad");
       return;
     }
 
+    // Check temporary lock
     if (isLocked(username)) {
-      showToast(toast, "המשתמש נעול זמנית עקב ניסיונות שגויים. נסו שוב מאוחר יותר.", "bad");
+      showToast(
+        toast,
+        "This account is temporarily locked due to multiple failed login attempts. Please try again later.",
+        "bad"
+      );
       return;
     }
 
+    // Validate credentials
     const user = StorageAPI.findUserByUsername(username);
     if (!user || user.password !== password) {
       registerFail(username);
-      showToast(toast, "פרטי התחברות שגויים.", "bad");
+      showToast(toast, "Invalid username or password.", "bad");
       return;
     }
-
+    // Successful login
     clearFails(username);
 
-    // עדכון סטטיסטיקה בסיסי (שלד)
+    // Update basic user statistics (skeleton)
     const users = StorageAPI.getUsers();
     const idx = users.findIndex(u => u.id === user.id);
     if (idx >= 0) {
@@ -108,12 +126,12 @@ function initLogin() {
       StorageAPI.setUsers(users);
     }
 
-    // "Cookie" שלד: נשמור session עם תפוגה
-    const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 שעות
+    // Session handling with expiration of 2 hours
+    const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
     StorageAPI.setSession({
       userId: user.id,
       username: user.username,
-      expiresAtISO: expiresAt.toISOString()
+      expiresAt: expiresAt.toISOString()
     });
 
     location.href = "home.html";
@@ -133,25 +151,29 @@ function initRegister() {
     const password = form.password.value;
     const password2 = form.password2.value;
 
+    // Validate required fields
     if (!fullName || !email || !username || !password || !password2) {
-      showToast(toast, "נא למלא את כל השדות.", "bad");
+      showToast(toast, "please fill in all fields.", "bad");
       return;
     }
 
+    // Password confirmation check
     if (password !== password2) {
-      showToast(toast, "הסיסמאות אינן תואמות.", "bad");
+      showToast(toast, "Passwords do not match.", "bad");
       return;
     }
 
+    // Ensure username uniqueness
     if (StorageAPI.findUserByUsername(username)) {
-      showToast(toast, "שם המשתמש כבר קיים. בחרו שם אחר.", "bad");
+      showToast(toast, "Username already exists. Please choose another.", "bad");
       return;
     }
 
+    // Create new user
     StorageAPI.createUser({ username, password, fullName, email });
-    showToast(toast, "נרשמת בהצלחה! עכשיו אפשר להתחבר.", "ok");
+    showToast(toast, "Successfully registered! You can now log in.", "ok");
 
-    // שלד: מעבר אוטומטי לכניסה אחרי שנייה
+    // Skeleton: auto-redirect to login after a short delay
     setTimeout(() => location.href = "index.html", 900);
   });
 }
