@@ -106,10 +106,6 @@
   min-width: 110px;
 }
 
-.difficulty-bar .btn.is-active {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 26px rgba(140, 120, 255, 0.18);
-}
-
 .difficulty-bar .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
