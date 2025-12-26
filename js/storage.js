@@ -65,7 +65,6 @@ const StorageAPI = (() => {
       createdAt: new Date().toISOString(),
       stats: {
         totalLogins: 0,
-        points: 0,
         lastPlayed: null,
         memoryLevel: "easy"
       }

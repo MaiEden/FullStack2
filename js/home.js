@@ -1,32 +1,44 @@
 "use strict";
 
+// When the DOM is fully loaded, run startup
 document.addEventListener("DOMContentLoaded", () => {
+  // Make sure the user is logged in
   enforceSession();
+  // Wire global actions
   wireGlobalActions();
+  // Render the home dashboard
   renderHome();
+  // Wire game navigation buttons
+  wireGameButtons();
 });
 
+// Wires global click actions
 function wireGlobalActions() {
   document.addEventListener("click", (e) => {
+    // Find the nearest clicked element that declares a data-action
     const a = e.target.closest("[data-action]");
     if (!a) return;
 
+    // Handle logout action
     if (a.dataset.action === "logout") {
-      e.preventDefault();
-      StorageAPI.clearSession();
-      location.href = "index.html";
+      e.preventDefault(); // prevent default link/button behavior
+      StorageAPI.clearSession(); // clear saved session
+      location.href = "index.html"; // redirect to login page
     }
   });
 }
 
+// Ensures there is a valid session.
 function enforceSession() {
   const session = StorageAPI.getSession();
+
+  // If there is no session or no userId, redirect to login
   if (!session?.userId) {
     location.href = "index.html";
     return;
   }
 
-  // תפוגה (שלד)
+  // expiration check:
   if (session.expiresAtISO && new Date(session.expiresAtISO) <= new Date()) {
     StorageAPI.clearSession();
     location.href = "index.html";
@@ -34,44 +46,45 @@ function enforceSession() {
   }
 }
 
+// Renders the home page: shows current user's name + KPI numbers.
 function renderHome() {
   const session = StorageAPI.getSession();
   const users = StorageAPI.getUsers();
+
+  // Find the current user record by id from the session
   const me = users.find(u => u.id === session.userId);
 
+  // Grab UI elements
   const nameEl = document.querySelector("#currentUserName");
-  const kpiLogins = document.querySelector("#kpiLogins");
-  const kpiPoints = document.querySelector("#kpiPoints");
-  const kpiPlayers = document.querySelector("#kpiPlayers");
+  const simonSays = document.querySelector("#simonSays");
+  const memoryGame = document.querySelector("#memoryGame");
 
+  // Display full name if available, otherwise use session username
   nameEl.textContent = me?.fullName ? me.fullName : session.username;
 
-  kpiLogins.textContent = String(me?.stats?.totalLogins ?? 0);
-  kpiPoints.textContent = String(me?.stats?.points ?? 0);
-  kpiPlayers.textContent = String(users.length);
+  // Display KPIs with safe defaults
+  simonSays.textContent = String(me?.stats?.simon?.currentDiff ?? "easy");
+  memoryGame.textContent = String(me?.stats?.memoryLevel ?? "easy");
+}
 
-  // כפתורים למשחקים שעובדים בעתיד:
-  // ניווט למשחקים פעילים
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-game]");
-  if (!btn) return;
+function wireGameButtons() {
+  const btnSimon = document.querySelector('[data-game="simon"]');
+  const btnMemory = document.querySelector('[data-game="memory"]');
 
-  if (btn.dataset.status !== "live") return;
-
-  const game = btn.dataset.game;
-
-  switch (game) {
-    case "memory":
-      location.href = "memory.html";
-      break;
-
-    case "simon":
+  // If buttons are missing, do nothing (prevents errors)
+  if (btnSimon) {
+    btnSimon.addEventListener("click", () => {
+      // optional: only allow if live
+      if (btnSimon.dataset.status !== "live") return;
       location.href = "simon.html";
-      break;
-
-    default:
-      console.warn("Unknown game:", game);
+    });
   }
-});
 
+  if (btnMemory) {
+    btnMemory.addEventListener("click", () => {
+      // optional: only allow if live
+      if (btnMemory.dataset.status !== "live") return;
+      location.href = "memory.html";
+    });
+  }
 }
