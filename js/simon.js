@@ -1,26 +1,9 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-  wireGlobalActions();
   enforceSession();
   initSimon();
 });
-
-/**
- * Wires global click actions (logout).
- */
-function wireGlobalActions() {
-  document.addEventListener("click", (e) => {
-    // Find the closest element that has data-action
-    const action = e.target.closest("[data-action]")?.dataset.action;
-
-    // If the action is logout, clear session and go back to index.html
-    if (action === "logout") {
-      StorageAPI.clearSession();
-      location.href = "index.html";
-    }
-  });
-}
 
 // Redirects to index.html if there is no valid session.
 function enforceSession() {

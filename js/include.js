@@ -25,3 +25,20 @@ function include(slotId, url) {
 include("bg-slot", "../html/partials/background.html");
 include("header-slot", "../html/partials/header.html");
 include("footer-slot", "../html/partials/footer.html");
+
+// Global actions (loaded once via include.js)
+(function initGlobalActionsOnce() {
+  if (window.__globalActionsWired) return;
+  window.__globalActionsWired = true;
+
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-action]");
+    if (!el) return;
+
+    if (el.dataset.action === "logout") {
+      e.preventDefault();
+      StorageAPI.clearSession();
+      location.href = "index.html";
+    }
+  });
+})();

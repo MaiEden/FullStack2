@@ -4,29 +4,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Make sure the user is logged in
   enforceSession();
-  // Wire global actions
-  wireGlobalActions();
   // Render the home dashboard
   renderHome();
   // Wire game navigation buttons
   wireGameButtons();
 });
-
-// Wires global click actions
-function wireGlobalActions() {
-  document.addEventListener("click", (e) => {
-    // Find the nearest clicked element that declares a data-action
-    const a = e.target.closest("[data-action]");
-    if (!a) return;
-
-    // Handle logout action
-    if (a.dataset.action === "logout") {
-      e.preventDefault(); // prevent default link/button behavior
-      StorageAPI.clearSession(); // clear saved session
-      location.href = "index.html"; // redirect to login page
-    }
-  });
-}
 
 // Ensures there is a valid session.
 function enforceSession() {
