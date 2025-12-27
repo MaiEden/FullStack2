@@ -73,7 +73,7 @@ function initLogin() {
   const toast = document.querySelector("#toast");
 
   form.addEventListener("submit", (e) => {
-
+    e.preventDefault();
     const username = form.username.value.trim();
     const password = form.password.value;
 

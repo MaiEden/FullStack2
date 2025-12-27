@@ -1,51 +1,41 @@
 "use strict";
 
-/* =========================
-   Elements
-========================= */
-const board = document.getElementById("board");
-const stack = document.getElementById("stack");
+// DOM Elements
+const board = document.getElementById("board");   // Game board (grid of cards)
+const stack = document.getElementById("stack");   // Side stack for matched cards
 
-const movesEl = document.getElementById("moves");
-const matchesEl = document.getElementById("matches");
-const difficultyLabel = document.getElementById("difficultyLabel");
+const movesEl = document.getElementById("moves");           // Moves counter
+const matchesEl = document.getElementById("matches");       // Matches counter
+const difficultyLabel = document.getElementById("difficultyLabel"); // Difficulty text
 
-/* =========================
-   Force stack behavior (JS only)
-========================= */
-stack.style.position = "relative";
-stack.style.minHeight = "160px";
+// Configuration
+const EMOJIS = [
+  "🚀","🛸","🌌","⚡","🎮","👾","🧠","💎","🔮","🔥","🛰️","🪐"
+];
 
-/* =========================
-   Config
-========================= */
-const EMOJIS = ["🚀","🛸","🌌","⚡","🎮","👾","🧠","💎","🔮","🔥","🛰️","🪐"];
-
+// Order of difficulty progression
 const LEVEL_ORDER = ["easy", "medium", "hard"];
 
+// Game settings per difficulty
 const LEVELS = {
   easy:   { pairs: 4, cols: 4 },
   medium: { pairs: 6, cols: 4 },
   hard:   { pairs: 8, cols: 4 }
 };
 
-/* =========================
-   State
-========================= */
+// Game State
 let firstCard = null;
 let secondCard = null;
-let lock = false;
+let lock = false; // Prevent clicks during animations
 
-let moves = 0;
-let matches = 0;
-let totalPairs = 0;
+let moves = 0; // Number of moves
+let matches = 0; // Number of matched pairs
+let totalPairs = 0; // Pairs required to finish the level
 
-let levelIndex = 0;
-let stackCount = 0;
+let levelIndex = 0; // Index in LEVEL_ORDER
+let stackCount = 0; // Used to offset stacked cards visually
 
-/* =========================
-   Storage helpers
-========================= */
+// Storage Helpers
 function getCurrentUser() {
   const session = StorageAPI.getSession();
   if (!session) return null;
@@ -58,6 +48,7 @@ function getUserLevelIndex() {
   const user = getCurrentUser();
   if (!user) return 0;
 
+  // Initialize memory level if missing
   if (!user.stats.memoryLevel) {
     user.stats.memoryLevel = "easy";
     StorageAPI.setUsers(StorageAPI.getUsers());
@@ -80,9 +71,7 @@ function saveUserLevel(level) {
   StorageAPI.setUsers(users);
 }
 
-/* =========================
-   Init – AUTO START
-========================= */
+// Initialization Start
 levelIndex = getUserLevelIndex();
 startGame();
 
@@ -98,13 +87,16 @@ function startGame() {
 
   difficultyLabel.textContent = capitalize(level);
 
+  // Create shuffled symbols (pairs duplicated)
   const symbols = shuffle([
     ...EMOJIS.slice(0, totalPairs),
     ...EMOJIS.slice(0, totalPairs)
   ]);
 
+  // Configure grid columns
   board.style.gridTemplateColumns = `repeat(${cfg.cols}, 80px)`;
 
+  // Create card elements
   symbols.forEach(symbol => {
     const card = document.createElement("div");
     card.className = "card-tile";
@@ -123,7 +115,7 @@ function startGame() {
 }
 
 /* =========================
-   Gameplay
+   Gameplay Logic
 ========================= */
 function reveal(card) {
   if (lock) return;
@@ -172,9 +164,10 @@ function checkMatch() {
 }
 
 /* =========================
-   STACK + PLACEHOLDER (KEY FIX)
+   Matched Stack Handling
 ========================= */
 function stackMatchedCards(c1, c2) {
+  // Small bounce animation
   [c1, c2].forEach(card => {
     card.animate(
       [
@@ -182,13 +175,14 @@ function stackMatchedCards(c1, c2) {
         { transform: "translateY(-12px)" },
         { transform: "translateY(0)" }
       ],
-      { duration: 220, easing: "ease-out" }
+      { duration: 400, easing: "ease-out" }
     );
   });
 
   setTimeout(() => {
     [c1, c2].forEach(card => {
-      /* 1️⃣ placeholder שומר מקום בלוח */
+
+      // 1. Placeholder keeps board layout intact
       const placeholder = document.createElement("div");
       placeholder.className = "card-tile";
       placeholder.style.width = card.offsetWidth + "px";
@@ -196,7 +190,7 @@ function stackMatchedCards(c1, c2) {
 
       board.replaceChild(placeholder, card);
 
-      /* 2️⃣ הקלף האמיתי נערם בצד */
+      // 2. Move actual card to the side stack
       card.classList.remove("revealed");
       card.style.pointerEvents = "none";
       card.style.position = "absolute";
@@ -211,9 +205,7 @@ function stackMatchedCards(c1, c2) {
   }, 220);
 }
 
-/* =========================
-   Level Finish
-========================= */
+// Level Completion
 function finishLevel() {
   lock = true;
 
@@ -232,7 +224,7 @@ function finishLevel() {
 }
 
 /* =========================
-   Helpers
+   Helper Functions
 ========================= */
 function resetPick() {
   firstCard = null;
