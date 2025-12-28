@@ -28,25 +28,20 @@ function enforceSession() {
   }
 }
 
-// Renders the home page: shows current user's name + KPI numbers.
+// Renders the home page: shows current user's name + Achievements table.
 function renderHome() {
   const session = StorageAPI.getSession();
   const users = StorageAPI.getUsers();
 
-  // Find the current user record by id from the session
+  // Find current user
   const me = users.find(u => u.id === session.userId);
 
-  // Grab UI elements
+  // Update welcome name
   const nameEl = document.querySelector("#currentUserName");
-  const simonSays = document.querySelector("#simonSays");
-  const memoryGame = document.querySelector("#memoryGame");
-
-  // Display full name if available, otherwise use session username
   nameEl.textContent = me?.fullName ? me.fullName : session.username;
 
-  // Display KPIs with safe defaults
-  simonSays.textContent = String(me?.stats?.simon?.currentDiff ?? "easy");
-  memoryGame.textContent = String(me?.stats?.memoryLevel ?? "easy");
+  // Render table
+  renderUsersTable(users, session.userId);
 }
 
 function wireGameButtons() {
@@ -69,4 +64,41 @@ function wireGameButtons() {
       location.href = "memory.html";
     });
   }
+}
+
+function renderUsersTable(users, myId) {
+  const tbody = document.querySelector("#usersStatsTbody");
+  if (!tbody) return;
+
+  const safeUsers = Array.isArray(users) ? users.slice() : [];
+
+  // Sort: current user first, then by username
+  safeUsers.sort((a, b) => {
+    if (a.id === myId) return -1;
+    if (b.id === myId) return 1;
+    return a.username.localeCompare(b.username);
+  });
+
+  tbody.innerHTML = safeUsers.map(u => {
+    const isMe = u?.id === myId;
+
+    const playerName = u?.username || u?.fullName || "Unknown";
+
+    // Simon difficulty
+    const simon = String(u?.stats?.simon?.currentDiff ?? "easy");
+
+    // Memory level
+    const memory = String(u?.stats?.memoryLevel ?? "easy");
+
+    return `
+      <tr class="${isMe ? "is-me" : ""}">
+        <td>
+            ${playerName}
+            ${isMe ? `<span class="pill">You</span>` : ``}
+        </td>
+        <td>${simon}</td>
+        <td>${memory}</td>
+      </tr>
+    `;
+  }).join("");
 }

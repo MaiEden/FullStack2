@@ -30,7 +30,8 @@
           </div>
           <h3 class="tile-title">Simon Says</h3>
           <p class="tile-desc">
-            Watch the lights, remember the order, and repeat the sequence exactly. Each round adds a new step, increasing the speed and difficulty as you go. How far can you make it without a mistake?
+            Watch the lights, remember the order, and repeat the sequence exactly. Each round adds a new step,
+            increasing the speed and difficulty as you go. How far can you make it without a mistake?
           </p>
           <div class="tile-actions">
             <button class="btn btn-primary" data-game="simon" data-status="live">
@@ -45,7 +46,8 @@
           </div>
           <h3 class="tile-title">Memory Game</h3>
           <p class="tile-desc">
-            Flip the cards, memorize their positions, and find all matching pairs using the fewest moves possible. Choose from multiple difficulty levels, from beginner grids to advanced challenges.
+            Flip the cards, memorize their positions, and find all matching pairs using the fewest moves possible.
+            Choose from multiple difficulty levels, from beginner grids to advanced challenges.
           </p>
           <div class="tile-actions">
             <button class="btn btn-primary" data-game="memory" data-status="live">
@@ -75,7 +77,8 @@
           </div>
           <h3 class="tile-title">Space Puzzle</h3>
           <p class="tile-desc">
-            Solve logic-based puzzles set in space. Move objects, activate mechanisms, and plan your steps carefully to complete each level.
+            Solve logic-based puzzles set in space. Move objects, activate mechanisms, and plan your steps carefully to
+            complete each level.
           </p>
           <div class="tile-actions">
             <button class="btn btn-primary" data-game="space" data-status="dev">
@@ -90,7 +93,8 @@
           </div>
           <h3 class="tile-title">Reflex Dash</h3>
           <p class="tile-desc">
-            A fast-paced reaction game where targets appear randomly on the screen. Hit them as quickly as possible before time runs out. Speed and accuracy determine your score.
+            A fast-paced reaction game where targets appear randomly on the screen. Hit them as quickly as possible
+            before time runs out. Speed and accuracy determine your score.
           </p>
           <div class="tile-actions">
             <button class="btn btn-primary" data-game="reflexDash" data-status="dev">
@@ -105,7 +109,8 @@
           </div>
           <h3 class="tile-title">Logic Grid</h3>
           <p class="tile-desc">
-            A short, brain-teasing puzzle game where players must fill or activate a grid using simple rules. Each level introduces a new constraint, requiring careful planning and logical thinking.
+            A short, brain-teasing puzzle game where players must fill or activate a grid using simple rules. Each level
+            introduces a new constraint, requiring careful planning and logical thinking.
           </p>
           <div class="tile-actions">
             <button class="btn btn-primary" data-game="logicGrid" data-status="dev">
@@ -114,19 +119,28 @@
           </div>
         </article>
       </div>
-      <h1>Your achievements in games:</h1>
+      <h1>Scors:</h1>
 
-      <div class="kpi">
-        <div class="card">
-          <div class="kpi-num" id="simonSays">0</div>
-          <div class="kpi-lbl">Simon Says</div>
+      <div class="card glow table-card">
+        <div class="table-head">
+          <div class="table-title">Leaderboard</div>
         </div>
-        <div class="card">
-          <div class="kpi-num" id="memoryGame">0</div>
-          <div class="kpi-lbl">Memory game</div>
+
+        <div class="table-wrap">
+          <table class="data-table" aria-label="All users stats table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Simon</th>
+                <th>Memory</th>
+              </tr>
+            </thead>
+            <tbody id="usersStatsTbody">
+              <!-- rows injected by home.js -->
+            </tbody>
+          </table>
         </div>
       </div>
-
   </main>
 
   <!-- slot for footer -->
@@ -137,4 +151,5 @@
   <script src="../js/home.js"></script>
   <script src="../js/include.js"></script>
 </body>
+
 </html>
