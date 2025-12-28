@@ -16,7 +16,7 @@ function initSimon() {
   // onMs - time the pad is on
   // offMs - time all pads are off
   const DIFFS = {
-    easy: { label: "Easy", pads: 4, maxRounds: 2, onMs: 400, offMs: 150 },
+    easy: { label: "Easy", pads: 4, maxRounds: 10, onMs: 400, offMs: 150 },
     medium: { label: "Medium", pads: 5, maxRounds: 15, onMs: 350, offMs: 130 },
     hard: { label: "Hard", pads: 6, maxRounds: 20, onMs: 300, offMs: 110 }
   };
