@@ -33,7 +33,7 @@ function registerFail(username) {
   const rec = locks[key] || { failed: 0, lockedUntil: null };
   rec.failed += 1;
 
-  // Skeleton logic: after 3 failed attempts, lock for 60 seconds
+  // after 3 failed attempts, lock for 60 seconds
   if (rec.failed >= 3) {
     const until = new Date(Date.now() + 60 * 1000);
     rec.lockedUntil = until.toISOString();
@@ -103,7 +103,7 @@ function initLogin() {
     // Successful login
     clearFails(username);
 
-    // Update basic user statistics (skeleton)
+    // Update basic user statistics
     const users = StorageAPI.getUsers();
     const idx = users.findIndex(u => u.id === user.id);
     if (idx >= 0) {
@@ -158,7 +158,7 @@ function initRegister() {
     StorageAPI.createUser({ username, password, fullName, email });
     showToast(toast, "Successfully registered! You can now log in.", "ok");
 
-    // Skeleton: auto-redirect to login after a short delay
+    // auto-redirect to login after a short delay
     setTimeout(() => location.href = "index.html", 900);
   });
 }
